@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const SALT_ROUNDS = 10;
-S
+
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
