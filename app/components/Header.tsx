@@ -1,4 +1,36 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function Header() {
+  const [user, setUser] = useState<{ id: number; email: string; role?: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (mounted) setUser(data.user ?? null);
+      } catch {
+        if (mounted) setUser(null);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+    return () => { mounted = false; };
+  }, []);
+
+  async function signOut() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    setUser(null);
+    router.push('/login');
+  }
   return (
     <header className="mx-auto max-w-7xl px-6 py-6 md:py-8">
       <nav className="flex items-center justify-between gap-6">
@@ -16,7 +48,21 @@ export default function Header() {
           <a className="hover:text-white transition" href="#features">Features</a>
           <a className="hover:text-white transition" href="#pricing">Pricing</a>
           <a className="hover:text-white transition" href="#docs">Docs</a>
-          <a className="bg-white/6 px-3 py-2 rounded-full text-sm hover:bg-white/12 transition" href="#">Sign in</a>
+          {!loading && !user && (
+            <>
+              <a className="bg-white/6 px-3 py-2 rounded-full text-sm hover:bg-white/12 transition" href="/login">Sign in</a>
+            </>
+          )}
+
+          {!loading && user && (
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-slate-300">{user.email}</div>
+              {user.role === 'admin' && (
+                <a className="text-sm underline hover:text-white" href="/admin">Admin</a>
+              )}
+              <button onClick={signOut} className="rounded-full bg-white/6 px-3 py-2 text-sm hover:bg-white/10">Logout</button>
+            </div>
+          )}
         </div>
 
         <div className="md:hidden">

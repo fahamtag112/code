@@ -22,7 +22,7 @@ export async function GET(req: Request) {
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) return NextResponse.json({ user: null });
 
-    return NextResponse.json({ user: { id: user.id, email: user.email } });
+    return NextResponse.json({ user: { id: user.id, email: user.email, role: user.role } });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ user: null });

@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     const ok = await verifyPassword(password, user.password);
     if (!ok) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 
-    const token = createToken({ sub: user.id, email: user.email });
+    const token = createToken({ sub: user.id, email: user.email, role: user.role });
 
-    const res = NextResponse.json({ user: { id: user.id, email: user.email } });
+    const res = NextResponse.json({ user: { id: user.id, email: user.email, role: user.role } });
     res.cookies.set({ name: 'token', value: token, httpOnly: true, path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 7 });
 
     return res;

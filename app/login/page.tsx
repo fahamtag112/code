@@ -25,8 +25,10 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Authentication failed');
 
-      // success -> redirect to homepage or protected area
-      router.push('/');
+      // success -> redirect based on role
+      const role = data?.user?.role as string | undefined;
+      if (role === 'admin') router.push('/admin');
+      else router.push('/dashboard');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       setError(msg || 'Unknown error');
@@ -36,16 +38,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="max-w-md w-full rounded-2xl bg-white/5 p-8 border border-white/6">
+    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-[#0f172a] via-[#071025] to-[#071026]">
+      <div className="max-w-md w-full rounded-2xl bg-gradient-to-b from-[#0f172a] via-[#071025] to-[#071026] p-8 border border-white/6">
         <h2 className="text-xl font-semibold text-white mb-4">Sign in</h2>
 
         <form onSubmit={submit} className="flex flex-col gap-3">
           <label className="text-sm text-slate-300">Email</label>
-          <input value={email} onChange={e => setEmail(e.target.value)} required type="email" className="rounded-md px-3 py-2 bg-black/[.12]" />
+          <input value={email} onChange={e => setEmail(e.target.value)} required type="email" className="rounded-md px-3 py-2 bg-white/[.12]" />
 
           <label className="text-sm text-slate-300">Password</label>
-          <input value={password} onChange={e => setPassword(e.target.value)} required type="password" className="rounded-md px-3 py-2 bg-black/[.12]" />
+          <input value={password} onChange={e => setPassword(e.target.value)} required type="password" className="rounded-md px-3 py-2 bg-white/[.12]" />
 
           {error && <div className="text-sm text-rose-400">{error}</div>}
 
