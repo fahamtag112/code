@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight } from "lucide-react";
 
 
+
 export default function RegisterPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -67,5 +68,6 @@ export default function RegisterPage() {
                 </div>
             </div>
         </div>
+        
     );
 }
